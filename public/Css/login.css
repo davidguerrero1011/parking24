@@ -45,8 +45,8 @@ a {
 
 button {
     border-radius: 20px;
-    border: 1px solid #FF4B2B;
-    background-color: #FF4B2B;
+    border: 1px solid #FF416C;
+    background-color: #FF416C;
     color: #FFFFFF;
     font-size: 12px;
     font-weight: bold;
@@ -228,6 +228,15 @@ input {
     width: 40px;
 }
 
+.social:hover {
+    background-color: #FF416C;
+}
+
+.forget-background:hover {
+    color: #FF416C;
+    text-shadow: #FF4B2B;
+}
+
 footer {
     background-color: #222;
     color: #fff;
@@ -251,4 +260,20 @@ footer i {
 footer a {
     color: #3c97bf;
     text-decoration: none;
+}
+
+.title-login {
+    color: #FF416C;
+}
+
+.bi-facebook:hover {
+    color: white;
+}
+
+.bi-google:hover {
+    color: white;
+}
+
+.bi-linkedin:hover {
+    color: white;
 }

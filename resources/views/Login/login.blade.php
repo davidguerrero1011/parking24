@@ -15,6 +15,9 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 
+    <!-- Option 1: Include in HTML -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
+
     {{-- Styles --}}
     <link rel="stylesheet" href="Css/login.css">
 </head>
@@ -22,28 +25,16 @@
 <body>
 
     <div class="container" id="container">
-
-        @if (session('message'))
-            <div class="toast align-items-center text-white bg-primary border-0" role="alert" aria-live="assertive" aria-atomic="true">
-                <div class="d-flex">
-                <div class="toast-body">
-                    {{ session('message') }}
-                </div>
-                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-                </div>
-            </div>
-        @endif
-
-        
         <div class="form-container sign-up-container">
             <form action="{{ route('store-users') }}" method="POST">
                 @csrf
-                <h1>Nueva Cuenta</h1>
-                <div class="social-container">
-                    <a href="#" class="social"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#" class="social"><i class="fab fa-google-plus-g"></i></a>
-                    <a href="#" class="social"><i class="fab fa-linkedin-in"></i></a>
-                </div>
+                <h1 class="title-login">Nueva Cuenta</h1>
+                {{-- <div class="social-container">
+                    <fb:login-button scope="public_profile,email" onlogin="checkLoginState();"></fb:login-button>
+                    <a href="#" class="social"><i class="bi bi-facebook"></i></a>
+                    <a href="#" class="social"><i class="bi bi-google"></i></a>
+                    <a href="#" class="social"><i class="bi bi-linkedin"></i></a>
+                </div> --}}
                 <span>o use su correo para registrarse</span>
                 <input type="text" name="userName" placeholder="Nombre" />
                 <input type="text" name="userLastName" placeholder="Apellido" />
@@ -52,30 +43,36 @@
             </form>
         </div>
         <div class="form-container sign-in-container">
-
-            @if ($errors->any())
-                <div class="alert alert-danger">
-                    <ul>
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
+            @if (session('message'))
+                <div class="mt-2 mx-3">
+                    <span style="margin-top: 5% !important"> <mark>{{ session('message') }}</mark> </span>
                 </div>
             @endif
 
-            <form action="validateLogin" method="POST">
+            <form action="{{ route('validateLogin') }}" method="POST">
                 @csrf
-                <h1>Ingrese</h1>
+                <h1 class="title-login">Ingrese</h1>
                 <div class="social-container">
-                    <a href="#" class="social"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#" class="social"><i class="fab fa-google-plus-g"></i></a>
-                    <a href="#" class="social"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="#" class="social"><i class="bi bi-facebook"></i></a>
+                    <a href="#" class="social"><i class="bi bi-google"></i></a>
+                    <a href="#" class="social"><i class="bi bi-linkedin"></i></a>
                 </div>
                 <span>o use su cuenta</span>
                 <input type="email" placeholder="Email" name="email" />
                 <input type="password" placeholder="Password" name="password" />
-                <a href="#">¿Olvido su contraseña?</a>
+                <a class="forget-background" href="#" data-bs-toggle="modal" id="forgotPassword"
+                    data-bs-target="#infoModal">¿Olvido su contraseña?</a>
                 <button>Ingresar</button>
+
+                @if ($errors->any())
+                    <div class="alert alert-danger">
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
             </form>
         </div>
         <div class="overlay-container">
@@ -104,11 +101,18 @@
     </footer>
 
 
+    {{-- Se incluye modal olvido contraseña --}}
+    @include('modals.info')
+
+
     {{-- JQuery --}}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 
     {{-- General Js --}}
     <script src="Js/login.js"></script>
+
+    {{-- Axios Library --}}
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
     {{-- Bootstrap Library JS --}}
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
@@ -120,6 +124,47 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
         integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous">
     </script>
+
+
+    {{-- Facebook Script SDK  --}}
+    {{-- <script>
+        window.fbAsyncInit = function() {
+            FB.init({
+                appId: '{your-app-id}',
+                cookie: true,
+                xfbml: true,
+                version: '{api-version}'
+            });
+
+            FB.AppEvents.logPageView();
+
+        };
+
+        (function(d, s, id) {
+            var js, fjs = d.getElementsByTagName(s)[0];
+            if (d.getElementById(id)) {
+                return;
+            }
+            js = d.createElement(s);
+            js.id = id;
+            js.src = "https://connect.facebook.net/en_US/sdk.js";
+            fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));
+
+
+
+        FB.getLoginStatus(function(response) {
+            statusChangeCallback(response);
+        });
+
+
+        function checkLoginState() {
+            FB.getLoginStatus(function(response) {
+                statusChangeCallback(response);
+            });
+        }
+    </script> --}}
+
 </body>
 
 </html>

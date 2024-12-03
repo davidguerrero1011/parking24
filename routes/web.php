@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Home\HomeController;
 use App\Http\Controllers\Login\LoginController;
+use App\Http\Middleware\Authenticate;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,10 +17,22 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::controller(LoginController::class)->group(function() {
-    Route::get('/', 'index')->name('login');
-    Route::post('validateLogin', 'validateLogin')->name('validateLogin');
+
+    Route::get('/', 'index')->name('login')->middleware('guest');
+    Route::post('validateLogin', 'validateLogin')->name('validateLogin')->middleware('guest');
+    Route::post('store-users', 'store')->name('store-users')->middleware('guest');
+    Route::post('validate-password','validatePassword')->name('validate-password')->middleware('guest');
+    Route::post('update-password','updatePassword')->name('update-password')->middleware('guest');
+
 });
 
 
-Route::get('home', [HomeController::class, 'index'])->name('home');
-Route::post('store-users', [HomeController::class, 'store'])->name('store-users');
+Route::group(['middleware' => ['auth:web']], function() {
+
+    Route::controller(HomeController::class)->group(function() {
+        Route::get('home','index')->name('home');
+        Route::post('logout','logOut')->name('logout');
+    });
+
+});
+
